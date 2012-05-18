@@ -1,0 +1,3 @@
+include LICENSE
+include run-tests.py
+include test/*.py

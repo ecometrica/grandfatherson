@@ -1,0 +1,9 @@
+syntax:glob
+
+# Python
+*.py[co]
+
+# setup.py
+dist
+build
+MANIFEST
