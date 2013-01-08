@@ -65,7 +65,7 @@ If you leave off the ``now`` argument, it will default to using
 To see which files should be deleted, use the ``dates_to_delete``
 function::
 
-    >>> from grandfatherson import dates_to_keep, SATURDAY
+    >>> from grandfatherson import dates_to_delete, SATURDAY
     >>> sorted(dates_to_delete(backups, days=7, weeks=4, months=3,
     ...                        firstweekday=SATURDAY, now=now))
     [datetime.date(1999, 1, 1),
