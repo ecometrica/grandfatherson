@@ -57,17 +57,17 @@ class Filter(object):
 
         datetimes = tuple(datetimes)
 
-        if now is None:
-            # Sample the first datetime to see if it is timezone-aware
-            tzinfo = None
-            if datetimes and datetimes[0].tzinfo is not None:
-                tzinfo = UTC()
+        # Sample the first datetime to see if it is timezone-aware
+        tzinfo = None
+        if datetimes and datetimes[0].tzinfo is not None:
+            tzinfo = UTC()
 
+        if now is None:
             now = datetime.now(tzinfo)
 
         if not hasattr(now, 'second'):
             # now looks like a date, so convert it into a datetime
-            now = datetime.combine(now, time(23, 59, 59, 999999))
+            now = datetime.combine(now, time(23, 59, 59, 999999, tzinfo=tzinfo))
 
         # Always keep datetimes from the future
         future = set(dt for dt in datetimes if dt > now)
