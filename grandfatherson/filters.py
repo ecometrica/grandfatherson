@@ -3,7 +3,22 @@ Filters used by GrandFatherSon to decide which datetimes to keep.
 """
 
 import calendar
-from datetime import date, datetime, time, timedelta
+from datetime import datetime, time, timedelta, tzinfo
+
+
+# As gleefully stolen from the python datetime docs
+class UTC(tzinfo):
+    """UTC"""
+    ZERO = timedelta(0)
+
+    def utcoffset(self, dt):
+        return self.ZERO
+
+    def tzname(self, dt):
+        return "UTC"
+
+    def dst(self, dt):
+        return self.ZERO
 
 
 class Filter(object):
@@ -40,11 +55,19 @@ class Filter(object):
         if number < 0 or not isinstance(number, (int, long)):
             raise ValueError('Invalid number: %s' % number)
 
+        datetimes = tuple(datetimes)
+
+        # Sample the first datetime to see if it is timezone-aware
+        tzinfo = None
+        if datetimes and datetimes[0].tzinfo is not None:
+            tzinfo = UTC()
+
         if now is None:
-            now = datetime.now()
+            now = datetime.now(tzinfo)
+
         if not hasattr(now, 'second'):
             # now looks like a date, so convert it into a datetime
-            now = datetime.combine(now, time(23, 59, 59, 999999))
+            now = datetime.combine(now, time(23, 59, 59, 999999, tzinfo=tzinfo))
 
         # Always keep datetimes from the future
         future = set(dt for dt in datetimes if dt > now)

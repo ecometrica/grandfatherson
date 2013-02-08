@@ -1,10 +1,13 @@
-from datetime import datetime
+from datetime import datetime, date
 import unittest
 
-from grandfatherson import (MONDAY, TUESDAY, WEDNESDAY, THURSDAY,
-                            FRIDAY, SATURDAY, SUNDAY)
+from grandfatherson import (FRIDAY, SATURDAY, SUNDAY)
 from grandfatherson.filters import (Seconds, Minutes, Hours, Days, Weeks,
-                                    Months, Years)
+                                    Months, Years, UTC)
+
+
+def utcdatetime(*args):
+    return datetime(*args, tzinfo=UTC())
 
 
 class TestSeconds(unittest.TestCase):
@@ -93,6 +96,30 @@ class TestSeconds(unittest.TestCase):
                               datetime(1999, 12, 31, 23, 59, 59, 999999),
                               datetime(2000, 1, 1, 0, 0, 0, 0),
                               datetime(2000, 1, 1, 0, 0, 1, 0)]))
+
+    def test_with_tzinfo(self):
+        utcnow = utcdatetime(2000, 1, 1, 0, 0, 1, 1)
+        tzinfo_datetimes = [
+            utcdatetime(2000, 1, 1, 0, 0, 1, 0),
+            utcdatetime(2000, 1, 1, 0, 0, 0, 1),
+            utcdatetime(2000, 1, 1, 0, 0, 0, 0),
+            utcdatetime(1999, 12, 31, 23, 59, 59, 999999),
+            utcdatetime(1999, 12, 31, 23, 59, 57, 0),
+        ]
+
+        self.assertEqual(Seconds.filter(tzinfo_datetimes, number=5,
+                                        now=utcnow),
+                         set([utcdatetime(1999, 12, 31, 23, 59, 57, 0),
+                              utcdatetime(1999, 12, 31, 23, 59, 59, 999999),
+                              utcdatetime(2000, 1, 1, 0, 0, 0, 0),
+                              utcdatetime(2000, 1, 1, 0, 0, 1, 0)]))
+
+        self.assertEqual(Seconds.filter(tzinfo_datetimes, number=6,
+                                        now=utcnow),
+                         set([utcdatetime(1999, 12, 31, 23, 59, 57, 0),
+                              utcdatetime(1999, 12, 31, 23, 59, 59, 999999),
+                              utcdatetime(2000, 1, 1, 0, 0, 0, 0),
+                              utcdatetime(2000, 1, 1, 0, 0, 1, 0)]))
 
 
 class TestMinutes(unittest.TestCase):
@@ -233,7 +260,7 @@ class TestHours(unittest.TestCase):
         # Ensure we get the oldest per-hour datetime when there are
         # duplicates: i.e. not datetime(2000, 1, 1, 0, 1, 0, 0)
         self.assertEqual(Hours.filter(self.datetimes, number=2,
-                                        now=self.now),
+                                      now=self.now),
                          set([datetime(2000, 1, 1, 0, 0, 0, 0),
                               datetime(2000, 1, 1, 1, 0, 0, 0)]))
 
@@ -381,6 +408,31 @@ class TestDays(unittest.TestCase):
                          set([datetime(1900, 2, 27, 0, 0, 0, 0),
                               datetime(1900, 2, 28, 0, 0, 0, 0),
                               datetime(1900, 3, 1, 0, 0, 0, 0)]))
+
+    def test_with_tzinfo_and_date(self):
+        tzinfo_datetimes = [
+            utcdatetime(2000, 1, 1, 1, 0, 0, 0),
+            utcdatetime(2000, 1, 1, 0, 0, 0, 0),
+            utcdatetime(1999, 12, 31, 23, 59, 59, 999999),
+            utcdatetime(1999, 12, 30, 0, 0, 0, 0),
+            utcdatetime(1999, 12, 28, 0, 0, 0, 0),
+        ]
+        today = date(2000, 1, 1)
+
+        self.assertEqual(Days.filter(tzinfo_datetimes, number=5, now=today),
+                         set([utcdatetime(1999, 12, 28, 0, 0, 0, 0),
+                              utcdatetime(1999, 12, 30, 0, 0, 0, 0),
+                              utcdatetime(1999, 12, 31, 23, 59, 59, 999999),
+                              utcdatetime(2000, 1, 1, 0, 0, 0, 0)]))
+
+    def test_with_date(self):
+        today = date(2000, 1, 1)
+
+        self.assertEqual(Days.filter(self.datetimes, number=5, now=today),
+                         set([datetime(1999, 12, 28, 0, 0, 0, 0),
+                              datetime(1999, 12, 30, 0, 0, 0, 0),
+                              datetime(1999, 12, 31, 23, 59, 59, 999999),
+                              datetime(2000, 1, 1, 0, 0, 0, 0)]))
 
 
 class TestWeeks(unittest.TestCase):
