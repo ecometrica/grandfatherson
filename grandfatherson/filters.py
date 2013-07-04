@@ -83,7 +83,7 @@ class Filter(object):
         # the oldest.
         kept = {}
         for dt in sorted(valid):
-            kept.setdefault(cls.mask(dt), dt)
+            kept.setdefault(cls.mask(dt, **options), dt)
 
         return set(kept.values()) | future
 

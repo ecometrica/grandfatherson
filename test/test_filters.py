@@ -524,6 +524,26 @@ class TestWeeks(unittest.TestCase):
                               datetime(1999, 12, 31, 23, 59, 59, 999999),
                               datetime(2000, 1, 1, 0, 0, 0, 0)]))
 
+    def test_different_firstweekday(self):
+        self.assertEqual(
+            Weeks.filter(
+                self.datetimes, number=3, firstweekday=3, now=self.now
+            ),
+            set([datetime(1999, 12, 18, 0, 0, 0, 0),
+                 datetime(1999, 12, 31, 23, 59, 59, 999999)])
+        )
+        filtered = Weeks.filter(
+                self.datetimes, number=5, firstweekday=3, now=self.now
+            )
+        self.assertEqual(
+            Weeks.filter(
+                self.datetimes, number=5, firstweekday=3, now=self.now
+            ),
+            set([datetime(1999, 12, 18, 0, 0, 0, 0),
+                 datetime(1999, 12, 4, 0, 0, 0, 0),
+                 datetime(1999, 12, 31, 23, 59, 59, 999999)])
+        )
+
 
 class TestMonths(unittest.TestCase):
     def setUp(self):
