@@ -47,7 +47,7 @@ def long_description():
 
 
 setup(name='GrandFatherSon',
-      version='1.2',
+      version='1.3',
       description='Grandfather-father-son backup rotation calculator',
       long_description=long_description(),
       author='Ecometrica',

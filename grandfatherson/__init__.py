@@ -144,6 +144,8 @@ import os
 
 from grandfatherson import filters
 
+__version__ = "1.3"
+
 
 def to_keep(datetimes,
             years=0, months=0, weeks=0, days=0,
