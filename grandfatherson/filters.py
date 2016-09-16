@@ -1,6 +1,7 @@
 """
 Filters used by GrandFatherSon to decide which datetimes to keep.
 """
+from __future__ import division
 
 import calendar
 from datetime import datetime, time, timedelta, tzinfo
@@ -52,7 +53,7 @@ class Filter(object):
         If there are ``datetimes`` after ``now``, they will be
         returned unfiltered.
         """
-        if number < 0 or not isinstance(number, (int, long)):
+        if not isinstance(number, int) or number < 0:
             raise ValueError('Invalid number: %s' % number)
 
         datetimes = tuple(datetimes)
@@ -169,7 +170,7 @@ class Months(Filter):
         month = now.month - number + 1
         # Handle negative months
         if month < 0:
-            year = year + (month / cls.MONTHS_IN_YEAR)
+            year = year + (month // cls.MONTHS_IN_YEAR)
             month = month % cls.MONTHS_IN_YEAR
         # Handle December
         if month == 0:

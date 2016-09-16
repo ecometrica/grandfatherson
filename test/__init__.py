@@ -1,9 +1,10 @@
+from __future__ import absolute_import
 import doctest
 import os
 
 import grandfatherson
 
-from test_filters import *
+from test.test_filters import *
 
 
 class Main(unittest.main):

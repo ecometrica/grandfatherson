@@ -19,7 +19,7 @@ for the all of year 1999 that need rotating::
     >>> start_date = datetime.date(1999, 1, 1)
     >>> end_date = datetime.date(1999, 12, 31)
     >>> backups = [start_date + datetime.timedelta(days=i)
-    ...            for i in xrange((end_date - start_date).days + 1)]
+    ...            for i in range((end_date - start_date).days + 1)]
     >>> backups
     [datetime.date(1999, 1, 1),
      datetime.date(1999, 1, 2),
@@ -98,7 +98,7 @@ Finally, if you need to rotate backups that have timestamps in
     >>> end_datetime = datetime.datetime(1999, 12, 31, 23, 59, 59)
     >>> backups = [start_datetime + datetime.timedelta(seconds=i)
     ...            for i
-    ...            in xrange((end_datetime - start_datetime).seconds + 1)]
+    ...            in range((end_datetime - start_datetime).seconds + 1)]
     >>> backups
     [datetime.datetime(1999, 12, 31, 0, 0),
      datetime.datetime(1999, 12, 31, 0, 0, 1),
